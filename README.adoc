@@ -3,6 +3,8 @@
 This application is a backend that provides geolocation information about
 NationalParks. The information is stored in a mongodb
 
+It runs on Python 3.12 with Flask 3 and is served by gunicorn.
+
 == Installation
 
 Assuming you're using the project <roadshow>:
@@ -22,4 +24,50 @@ Example:
 
 ----
 oc new-app nationalparks-py -p APPLICATION_HOSTNAME=nationalparks-roadshow.127.0.0.1.xip.io
+----
+
+Or build it straight from source with the Python builder image:
+
+----
+oc new-app python:3.12-ubi9~https://github.com/openshift-roadshow/nationalparks-py.git
+----
+
+== Configuration
+
+The MongoDB connection is read from the environment. These are the names the
+OpenShift workshop documents, shared with the Java, JS and .NET backends:
+
+|===
+| Variable | Default
+
+| `MONGODB_SERVER_HOST` | `mongodb-nationalparks`
+| `MONGODB_SERVER_PORT` | `27017`
+| `MONGODB_DATABASE` | `mongodb`
+| `MONGODB_USER` | `mongodb`
+| `MONGODB_PASSWORD` | `mongodb`
+|===
+
+The names this backend used to require (`DB_HOST`, `DB_PORT`, `DB_NAME`,
+`MONGODB_USERNAME`, `DB_PASSWORD`) are still honoured, so existing deployments
+keep working. `DB_URI` overrides all of them with a full connection string, and
+`DATABASE_SERVICE_NAME` overrides just the host.
+
+== Endpoints
+
+|===
+| Path | Description
+
+| `/ws/healthz/` | Health check
+| `/ws/info/` | Backend description consumed by parksmap
+| `/ws/data/load` | Load the dataset into MongoDB
+| `/ws/data/all` | Every park
+| `/ws/data/within` | Parks inside a bounding box (`lat1`, `lon1`, `lat2`, `lon2`)
+|===
+
+== Running it locally
+
+----
+python3 -m venv venv
+./venv/bin/pip install -r requirements.txt
+MONGODB_SERVER_HOST=localhost ./venv/bin/gunicorn wsgi:application --bind=127.0.0.1:8080
 ----

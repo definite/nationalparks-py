@@ -364,7 +364,7 @@
             "from": {
               "kind": "ImageStreamTag",
               "namespace": "openshift",
-              "name": "python:2.7"
+              "name": "python:3.12-ubi9"
             },
             "incremental": false
           }
