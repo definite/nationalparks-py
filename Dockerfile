@@ -1,4 +1,6 @@
-FROM centos/python-36-centos7:latest
+FROM registry.access.redhat.com/ubi9/python-312:latest
+
+ENV APP_MODULE=wsgi:application
 
 USER root
 

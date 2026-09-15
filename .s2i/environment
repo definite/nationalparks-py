@@ -1,0 +1,3 @@
+# Tells the Python S2I image to serve the Flask app with gunicorn instead of
+# looking for an app.py to run directly.
+APP_MODULE=wsgi:application
